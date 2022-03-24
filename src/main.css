@@ -1,3 +1,14 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+#download-files-container button {
+  margin: 0.5rem 1rem;
+}
+#outro a {
+  color: #00f;
+  font-weight: bold;
+}
+#outro a:hover {
+  text-decoration: underline;
+}

@@ -34,7 +34,7 @@
       " />
       </label>
     </form>
-    <p>or choose from one of these presets</p>
+    <p>or choose from one of these presets found in the HW 7 files</p>
     <select class="block w-full sm:w-40 text-sm text-slate-500" id="preset">
       <option value="" selected>Select</option>
       <option value="ex1">ex1.csv</option>
@@ -44,7 +44,28 @@
     </select>
 
 
-    <h3 class="text-lg font-bold mt-4">Step 2: Choose an x-value for the predicted y-value</h3>
+
+    <h3 class="text-lg font-bold mt-4">Step 2: Choose a regression model</h3>
+
+    <h4>Select regression model</h4>
+    <div class="flex items-center space-x-6">
+      <select class="block w-full sm:w-40 text-sm text-slate-500" id="model">
+        <option value="" selected>Select</option>
+        <option value="linear">Linear</option>
+        <option value="quadratic">Quadratic</option>
+        <option value="cubic">Cubic</option>
+        <option value="exponential">Exponential</option>
+      </select>
+      <span>for</span>
+      <select class="block w-full sm:w-20 text-sm text-slate-500" id="model-type">
+        <option value="" selected>Select</option>
+        <option value="y1">y1</option>
+        <option value="y2">y2</option>
+        <option value="y3">y3</option>
+      </select>
+    </div>
+
+    <h3 class="text-lg font-bold mt-4">Step 3: Pick a x-value for the predicted y-value</h3>
     <form class="flex items-center space-x-6 mt-2">
       <label for="x-value" class="block">
         <span class="">Choose x-value (k)</span>
@@ -56,43 +77,41 @@
       </label>
     </form>
 
+
     <!-- Output -->
     <h2 class="text-2xl font-light mt-10">Output</h2>
 
-    <h3 class="text-lg font-bold mt-4">Model</h3>
-    <span>Predicted: <span></span id="model-type">...</span>
-    <h4>Select regression model</h4>
-    <select class="block w-full sm:w-40 text-sm text-slate-500" id="model">
-      <option value="" selected>Select</option>
-      <option value="linear">Linear</option>
-      <option value="quadratic">Quadratic</option>
-      <option value="cubic">Cubic</option>
-      <option value="exponential">Exponential</option>
-    </select>
+    <h3 class="text-lg font-bold mt-4">Summary</h3>
 
-    <h4></h4>
+
+    <h4 class="mt-2">Simulated R output - <a href="#download-files-container">Copy text</a></h4>
+    <pre class="bg-slate-50 text-blue-700 p-2 rounded-lg overflow-x-auto" id="r-output">
+Please select a regression model and y-axis. </pre>
 
     <h3 class="text-lg font-bold mt-4">Plot</h3>
     <div class="grid justify-items-center">
-        <div class="border-2 border-violet-400 rounded-lg overflow-hidden w-full md:w-2/3">
-      <ul class="flex border-b">
-        <li class="-mb-px mr-1">
-          <a class="bg-white inline-block border-l border-t border-r rounded-t py-2 px-4 text-blue-700 font-semibold"
-            href="#">Scatterplot</a>
-        </li>
-        <li class="mr-1">
-          <a class="bg-white inline-block py-2 px-4 text-blue-500 hover:text-blue-800 font-semibold" href="#">Residuals</a>
-        </li>
-        <li class="mr-1">
-          <a class="bg-white inline-block py-2 px-4 text-blue-500 hover:text-blue-800 font-semibold" href="#">QQ Residuals</a>
-        </li>
-      </ul>
-      <div class="mt-0" style="">
-        <canvas id="plot"></canvas>
-      
+      <div class="border-2 border-violet-400 rounded-lg overflow-hidden w-full md:w-2/3">
+        <ul class="flex border-b">
+          <li class="-mb-px mr-1">
+            <a class="bg-white inline-block border-l border-t border-r rounded-t py-2 px-4 text-blue-700 font-semibold"
+              href="#">Scatterplot</a>
+          </li>
+          <li class="mr-1">
+            <a class="bg-white inline-block py-2 px-4 text-blue-500 hover:text-blue-800 font-semibold"
+              href="#">Residuals</a>
+          </li>
+          <li class="mr-1">
+            <a class="bg-white inline-block py-2 px-4 text-blue-500 hover:text-blue-800 font-semibold" href="#">QQ
+              Residuals</a>
+          </li>
+        </ul>
+        <div class="mt-0" style="">
+          <canvas id="plot"></canvas>
+
+        </div>
       </div>
+
     </div>
-  </div>
 
     <h3 class="text-lg font-bold mt-4">X-value Confidence Interval</h3>
     <p>This section is based on the (k) value specified above. You can also adjust the confidence interval.</p>
@@ -103,6 +122,33 @@
     </ul>
     <h4 class="font-semibold mt-3">Algebraic notation</h4>
     <pre>(0, 1)</pre>
+
+
+    <h3 class="text-lg font-bold mt-4">Download files for Homework 7 (MTH 246)</h3>
+    <div class="grid justify-items-center mt-2">
+      <div id="download-files-container"
+        class="grid justify-items-center bg-white border-2 border-violet-400 rounded-lg overflow-hidden w-full md:w-2/3">
+        <button class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-full" id="download-csv">Step
+          1: Copy Equation</button>
+        <button class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-full" id="download-csv">Step
+          2: Summary Table</button>
+        <button class="bg-violet-500 hover:bg-violet-700 text-white font-bold py-2 px-4 rounded-full"
+          id="download-csv">Step 3A: Download Residual Plot</button>
+        <button class="bg-violet-500 hover:bg-violet-700 text-white font-bold py-2 px-4 rounded-full"
+          id="download-csv">Step 3B: Download QQ Plot</button>
+        <button class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-full" id="download-csv">Step
+          4: Copy k=n Confidence Interval</button>
+      </div>
+    </div>
+    <div id="outro" class=" mt-4">
+      <p>All code, including math calculations, regression models, model prediction and confidence intervals are
+        coded entirely from scratch using JavaScript.
+        I did not use any math libraries, although <a href="https://github.com/Tom-Alexander/regression-js"
+          target="_blank">this one</a> would have been helpful.
+        All my calculations can be found <a href="">here</a>.
+      </p>
+      <p>The code styling was done with Tailwind CSS but I created the layout. </p>
+    </div>
 
     <footer class="text-center mt-8">
       <p class="text-gray-500">

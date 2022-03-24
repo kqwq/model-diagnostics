@@ -1,4 +1,5 @@
 import { Chart, registerables  } from "chart.js";
+import {} from "./math.js"
 
 Chart.register(...registerables);
 
@@ -37,6 +38,7 @@ const config = {
   type: 'scatter',
   data: data,
   options: {
+
     responsive: true,
     plugins: {
       legend: {
