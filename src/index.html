@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Model Diagnostics</title>
+</head>
+
+<body class=" bg-gradient-to-tr from-blue-100 to-purple-200">
+  <div class="container mx-auto px-4 mt-8">
+
+    <!-- Title -->
+    <div class="text-center">
+      <h1 class="text-3xl font-bold">Model Diagnostics</h1>
+      <p class="text-gray-500">by Kyle Wells</p>
+    </div>
+
+    <!-- Input -->
+    <h2 class="text-2xl font-light mt-8">Input</h2>
+    <h3 class="text-lg font-bold mt-4">Step 1: Upload a list of X,Y pairs (.csv)</h3>
+
+    <form class="flex items-center space-x-6 mt-2">
+
+      <label class="block">
+        <span class="sr-only">Choose profile photo</span>
+        <input type="file" class="block w-full text-sm text-slate-500
+        file:mr-4 file:py-2 file:px-4
+        file:rounded-full file:border-0
+        file:text-sm file:font-semibold
+        file:bg-violet-50 file:text-violet-700
+        hover:file:bg-violet-100
+      " />
+      </label>
+    </form>
+    <p>or choose from one of these presets</p>
+    <select class="block w-full sm:w-40 text-sm text-slate-500" id="preset">
+      <option value="" selected>Select</option>
+      <option value="ex1">ex1.csv</option>
+      <option value="ex2">ex2.csv</option>
+      <option value="ex3">ex3.csv</option>
+      <option value="ex5">ex5.csv</option>
+    </select>
+
+
+    <h3 class="text-lg font-bold mt-4">Step 2: Choose an x-value for the predicted y-value</h3>
+    <form class="flex items-center space-x-6 mt-2">
+      <label for="x-value" class="block">
+        <span class="">Choose x-value (k)</span>
+        <input type="number" class="block w-full text-sm mr-auto" id="x-value" placeholder="Type number">
+      </label>
+      <label for="confidence" class="block">
+        <span class="">Confidence Interval</span>
+        <input type="text" class="block w-full text-sm mr-auto" id="confidence" placeholder="0.95">
+      </label>
+    </form>
+
+    <!-- Output -->
+    <h2 class="text-2xl font-light mt-10">Output</h2>
+
+    <h3 class="text-lg font-bold mt-4">Model</h3>
+    <span>Predicted: <span></span id="model-type">...</span>
+    <h4>Select regression model</h4>
+    <select class="block w-full sm:w-40 text-sm text-slate-500" id="model">
+      <option value="" selected>Select</option>
+      <option value="linear">Linear</option>
+      <option value="quadratic">Quadratic</option>
+      <option value="cubic">Cubic</option>
+      <option value="exponential">Exponential</option>
+    </select>
+
+    <h4></h4>
+
+    <h3 class="text-lg font-bold mt-4">Plot</h3>
+    <div class="grid justify-items-center">
+        <div class="border-2 border-violet-400 rounded-lg overflow-hidden w-full md:w-2/3">
+      <ul class="flex border-b">
+        <li class="-mb-px mr-1">
+          <a class="bg-white inline-block border-l border-t border-r rounded-t py-2 px-4 text-blue-700 font-semibold"
+            href="#">Scatterplot</a>
+        </li>
+        <li class="mr-1">
+          <a class="bg-white inline-block py-2 px-4 text-blue-500 hover:text-blue-800 font-semibold" href="#">Residuals</a>
+        </li>
+        <li class="mr-1">
+          <a class="bg-white inline-block py-2 px-4 text-blue-500 hover:text-blue-800 font-semibold" href="#">QQ Residuals</a>
+        </li>
+      </ul>
+      <div class="mt-0" style="">
+        <canvas id="plot"></canvas>
+      
+      </div>
+    </div>
+  </div>
+
+    <h3 class="text-lg font-bold mt-4">X-value Confidence Interval</h3>
+    <p>This section is based on the (k) value specified above. You can also adjust the confidence interval.</p>
+    <ul class="flex space-x-4 ml-4">
+      <li>Lower bound: <b>0</b></li>
+      <li>Upper bound: <b>0</b></li>
+      <li>Confidence level: <b>0.95</b></li>
+    </ul>
+    <h4 class="font-semibold mt-3">Algebraic notation</h4>
+    <pre>(0, 1)</pre>
+
+    <footer class="text-center mt-8">
+      <p class="text-gray-500">
+        Source code available on
+        <a href="https://github.com/kqwq/model-diagnostics" target="_blank" class="hover:text-blue-600">GitHub</a> -
+        <a href="https://www.linkedin.com/in/kqwq" target="_blank" class="hover:text-blue-600">LinkedIn</a>
+      </p>
+
+  </div>
+
+</body>
+
+</html>
