@@ -51,13 +51,13 @@
     <div class="flex items-center space-x-6">
       <select class="block w-full sm:w-40 text-sm text-slate-500" id="model">
         <option value="" selected>Select</option>
-        <option value="linear">Linear</option>
-        <option value="quadratic">Quadratic</option>
-        <option value="cubic">Cubic</option>
-        <option value="exponential">Exponential</option>
+        <option value="linear">Simple linear</option>
+        <option value="linear-ln">Linear with ln(y)</option>
+        <option value="quadratic">Simple quadratic</option>
+        <option value="quadratic-sqrt">Quadratic with sqrt(y)</option>
       </select>
       <span>for</span>
-      <select class="block w-full sm:w-20 text-sm text-slate-500" id="model-type">
+      <select class="block w-full sm:w-20 text-sm text-slate-500" id="axis">
         <option value="" selected>Select</option>
         <option value="y1">y1</option>
         <option value="y2">y2</option>
@@ -65,7 +65,7 @@
       </select>
     </div>
 
-    <h3 class="text-lg font-bold mt-4">Step 3: Pick a x-value for the predicted y-value</h3>
+    <h3 class="text-lg font-bold mt-4">Step 3: Pick a x-value for the predicted y-value interval</h3>
     <form class="flex items-center space-x-6 mt-2">
       <label for="x-value" class="block">
         <span class="">Choose x-value (k)</span>
@@ -83,6 +83,9 @@
 
     <h3 class="text-lg font-bold mt-4">Summary</h3>
 
+    
+    <h4 class="mt-2">Equation for model</h4>
+    <p id="equation">...</p>
 
     <h4 class="mt-2">Simulated R output - <a href="#download-files-container">Copy text</a></h4>
     <pre class="bg-slate-50 text-blue-700 p-2 rounded-lg overflow-x-auto" id="r-output">
@@ -93,15 +96,15 @@ Please select a regression model and y-axis. </pre>
       <div class="border-2 border-violet-400 rounded-lg overflow-hidden w-full md:w-2/3">
         <ul class="flex border-b">
           <li class="-mb-px mr-1">
-            <a class="bg-white inline-block border-l border-t border-r rounded-t py-2 px-4 text-blue-700 font-semibold"
-              href="#">Scatterplot</a>
+            <a id="tab-scatterplot" class="tab active"
+              href="javascript:;">Scatterplot</a>
           </li>
-          <li class="mr-1">
-            <a class="bg-white inline-block py-2 px-4 text-blue-500 hover:text-blue-800 font-semibold"
-              href="#">Residuals</a>
+          <li class="-mb-px mr-1">
+            <a id="tab-residuals" class="tab "
+              href="javascript:;">Residuals</a>
           </li>
-          <li class="mr-1">
-            <a class="bg-white inline-block py-2 px-4 text-blue-500 hover:text-blue-800 font-semibold" href="#">QQ
+          <li class="-mb-px mr-1">
+            <a id="tab-qq" class="tab " href="javascript:;">QQ
               Residuals</a>
           </li>
         </ul>

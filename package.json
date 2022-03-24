@@ -27,6 +27,8 @@
     "webpack-dev-server": "^4.7.4"
   },
   "dependencies": {
-    "chart.js": "^3.7.1"
+    "chart.js": "^3.7.1",
+    "regression": "^2.0.1",
+    "zscore-probability": "^1.0.1"
   }
 }

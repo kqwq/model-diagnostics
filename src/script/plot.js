@@ -1,5 +1,5 @@
 import { Chart, registerables  } from "chart.js";
-import {} from "./math.js"
+
 
 Chart.register(...registerables);
 
@@ -15,6 +15,7 @@ let colors = [
   'rgb(190,0,64)',
   'rgb(0,155,247)'
 ];
+let defaultColor = 'rgb(0,0,0)';
 
 const data = {
   datasets: [
@@ -64,35 +65,20 @@ const config = {
     }
   },
 };
+function clearChart() {
+  myChart.data.datasets = [];
+  myChart.update();
+}
 function addDataset(name, data) {
   myChart.data.datasets.push({
     label: name,
     data: data,
-    borderColor: colors[name.at(-1) - 1],
+    borderColor: colors[name.at(-1)-1] || defaultColor,
     //backgroundColor: Utils.transparentize(Utils.CHART_COLORS.red, 0.5),
     yAxisID: "y",
   });
 }
-function plotData(inData, fileName) {
-  console.log("plotData", inData, fileName);
-  let columns = Object.keys(inData[0]);
-  let yAxes = columns.filter(x => x.startsWith("y"));
-  let xAxis = columns.find(x => x.startsWith("x"));
-  
-  // clear data
-  myChart.data.datasets = [];
-
-  // add datasets
-  yAxes.forEach(yAxis => {
-    let data = inData.map(p => {
-      return {
-        x: p[xAxis],
-        y: p[yAxis],
-      }
-    })
-    addDataset(yAxis, data);
-  });
-
+function updateChart(fileName) {
   myChart.options.plugins.title.text = `Scatterplot for ${fileName}`;
   myChart.update();
 }
@@ -105,4 +91,4 @@ const myChart = new Chart(
 canvas.style.backgroundColor = 'white'
 
 
-export { plotData };
+export { clearChart, addDataset, updateChart };
