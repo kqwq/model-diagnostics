@@ -9,137 +9,154 @@
 </head>
 
 <body class=" bg-gradient-to-tr from-blue-100 to-purple-200">
-  <div class="container mx-auto px-4 mt-8">
 
-    <!-- Title -->
-    <div class="text-center">
-      <h1 class="text-3xl font-bold">Model Diagnostics</h1>
-      <p class="text-gray-500">by Kyle Wells</p>
-    </div>
 
-    <!-- Input -->
-    <h2 class="text-2xl font-light mt-8">Input</h2>
-    <h3 class="text-lg font-bold mt-4">Step 1: Upload a list of X,Y pairs (.csv)</h3>
+  <!-- Title -->
+  <div class="text-center">
+    <h1 class="text-3xl font-bold  mt-8">Model Diagnostics</h1>
+    <p class="text-gray-500">by Kyle Wells</p>
+  </div>
+  <div id="chunk-container">
 
-    <form class="flex items-center space-x-6 mt-2">
 
-      <label class="block">
-        <span class="sr-only">Choose profile photo</span>
-        <input type="file" class="block w-full text-sm text-slate-500
+    <div class="chunk">
+
+      <!-- Input -->
+      <h2 class="text-2xl font-light mt-8">Input</h2>
+      <h3 class="text-lg font-bold mt-4">Step 1: Upload a list of X,Y pairs (.csv)</h3>
+
+      <form class="flex items-center space-x-6 mt-2">
+
+        <label class="block">
+          <span class="sr-only">Choose profile photo</span>
+          <input type="file" class="block w-full text-sm text-slate-500
         file:mr-4 file:py-2 file:px-4
         file:rounded-full file:border-0
         file:text-sm file:font-semibold
         file:bg-violet-50 file:text-violet-700
         hover:file:bg-violet-100
       " />
-      </label>
-    </form>
-    <p>or choose from one of these presets found in the HW 7 files</p>
-    <select class="block w-full sm:w-40 text-sm text-slate-500" id="preset">
-      <option value="" selected>Select</option>
-      <option value="ex1">ex1.csv</option>
-      <option value="ex2">ex2.csv</option>
-      <option value="ex3">ex3.csv</option>
-      <option value="ex5">ex5.csv</option>
-    </select>
-
-
-
-    <h3 class="text-lg font-bold mt-4">Step 2: Choose a regression model</h3>
-
-    <h4>Select regression model</h4>
-    <div class="flex items-center space-x-6">
-      <select class="block w-full sm:w-40 text-sm text-slate-500" id="model">
-        <option value="linear" selected>Linear</option>
-        <option value="linear-ln">Linear with ln(y)</option>
-        <option value="quadratic">Quadratic</option>
-        <option value="quadratic-sqrt">Quadratic with sqrt(y)</option>
-        <option value="cubic">Cubic</option>
-      </select>
-      <span>for</span>
-      <select class="block w-full sm:w-20 text-sm text-slate-500" id="axis">
+        </label>
+      </form>
+      <p>or choose from one of these presets found in the HW 7 files</p>
+      <select class="block w-full sm:w-40 text-sm text-slate-500" id="preset">
         <option value="" selected>Select</option>
-        <option value="y1">y1</option>
-        <option value="y2">y2</option>
-        <option value="y3">y3</option>
+        <option value="ex1">ex1.csv</option>
+        <option value="ex2">ex2.csv</option>
+        <option value="ex3">ex3.csv</option>
+        <option value="ex5">ex5.csv</option>
       </select>
-    </div>
-
-    <h3 class="text-lg font-bold mt-4">Step 3: Pick a x-value for the predicted y-value interval</h3>
-    <form class="flex items-center space-x-6 mt-2">
-      <label for="x-value" class="block">
-        <span class="">Choose x-value (k)</span>
-        <input type="number" class="block w-full text-sm mr-auto" id="x-value" placeholder="Type number">
-      </label>
-      <label for="confidence" class="block">
-        <span class="">Confidence Interval</span>
-        <input type="text" class="block w-full text-sm mr-auto" id="confidence" placeholder="0.95">
-      </label>
-    </form>
 
 
-    <!-- Output -->
-    <h2 class="text-2xl font-light mt-10">Output</h2>
 
-    <h3 class="text-lg font-bold mt-4">Summary</h3>
+      <h3 class="text-lg font-bold mt-4">Step 2: Choose a regression model</h3>
 
-    
-    <h4 class="mt-2">Equation for model</h4>
-    <p id="equation">...</p>
-
-    <h4 class="mt-2">Simulated R output - <a href="#download-files-container">Copy text</a></h4>
-    <pre class="bg-slate-50 text-blue-700 p-2 rounded-lg overflow-x-auto" id="r-output">
-Please select a regression model and y-axis. </pre>
-
-    <h3 class="text-lg font-bold mt-4">Plot</h3>
-    <div class="grid justify-items-center">
-      <div class="border-2 border-violet-400 rounded-lg overflow-hidden w-full md:w-2/3">
-        <ul class="flex border-b">
-          <li class="-mb-px mr-1">
-            <a id="tab-scatterplot" class="tab active"
-              href="javascript:;">Scatterplot</a>
-          </li>
-          <li class="-mb-px mr-1">
-            <a id="tab-residuals" class="tab "
-              href="javascript:;">Residuals</a>
-          </li>
-          <li class="-mb-px mr-1">
-            <a id="tab-qq" class="tab " href="javascript:;">QQ
-              Residuals</a>
-          </li>
-        </ul>
-        <div class="mt-0" style="">
-          <canvas id="plot"></canvas>
-
-        </div>
+      <h4>Select regression model</h4>
+      <div class="flex items-center space-x-6">
+        <select class="block w-full sm:w-40 text-sm text-slate-500" id="model">
+          <option value="linear" selected>Linear</option>
+          <option value="linear-ln">Linear with ln(y)</option>
+          <option value="linear-sqrt">Linear with sqrt(y)</option>
+          <option value="quadratic">Quadratic</option>
+          <option value="quadratic-ln">Quadratic with ln(y)</option>
+          <option value="quadratic-sqrt">Quadratic with sqrt(y)</option>
+          <option value="cubic">Cubic</option>
+        </select>
+        <span>for</span>
+        <select class="block w-full sm:w-20 text-sm text-slate-500" id="axis">
+          <option value="" selected>Select</option>
+          <option value="y1">y1</option>
+          <option value="y2">y2</option>
+          <option value="y3">y3</option>
+        </select>
       </div>
 
+      <h3 class="text-lg font-bold mt-4">Step 3: Pick a x-value for the predicted y-value interval</h3>
+      <form class="flex items-center space-x-6 mt-2">
+        <label for="x-value" class="block">
+          <span class="">Choose x-value (k)</span>
+          <input type="number" class="block w-full text-sm mr-auto" id="x-value" placeholder="Type number">
+        </label>
+        <label for="confidence" class="block">
+          <span class="">Confidence Interval</span>
+          <input type="text" class="block w-full text-sm mr-auto" id="confidence" placeholder="0.95">
+        </label>
+      </form>
     </div>
 
-    <h3 class="text-lg font-bold mt-4">X-value Confidence Interval</h3>
-    <p>This section is based on the (k) value specified above. You can also adjust the confidence interval.</p>
-    <ul class="flex space-x-4 ml-4">
-      <li>Lower bound: <b>0</b></li>
-      <li>Upper bound: <b>0</b></li>
-      <li>Confidence level: <b>0.95</b></li>
-    </ul>
-    <h4 class="font-semibold mt-3">Algebraic notation</h4>
-    <pre>(0, 1)</pre>
+  
 
+    <div class="chunk">
+
+      <h3 class="text-lg font-bold mt-4">Plot</h3>
+      <div class="grid justify-items-center">
+        <div class="border-2 border-violet-400 rounded-lg overflow-hidden w-full">
+          <ul class="flex border-b">
+            <li class="-mb-px mr-1">
+              <a id="tab-scatterplot" class="tab active" href="javascript:;">Scatterplot</a>
+            </li>
+            <li class="-mb-px mr-1">
+              <a id="tab-residuals" class="tab " href="javascript:;">Residuals</a>
+            </li>
+            <li class="-mb-px mr-1">
+              <a id="tab-qq" class="tab " href="javascript:;">QQ
+                Residuals</a>
+            </li>
+          </ul>
+          <div class="mt-0">
+            <canvas id="plot"></canvas>
+
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <div class="chunk">
+
+
+      <!-- Output -->
+      <h2 class="text-2xl font-light mt-10">Output</h2>
+
+      <h3 class="text-lg font-bold mt-4">Summary</h3>
+
+      <h4 class="mt-2">Equation for model</h4>
+      <p id="equation">...</p>
+
+      <h4 class="mt-2">Simulated R output - <a href="#download-files-container">Copy text</a></h4>
+      <pre class="bg-slate-50 text-blue-700 p-2 rounded-lg overflow-x-auto" id="r-output">
+Please select a regression model and y-axis. </pre>
+
+    </div>
+
+    <div class="chunk">
+
+      <h3 class="text-lg font-bold mt-4">X-value Confidence Interval</h3>
+      <p>This section is based on the (k=<span id="k"></span>) value specified above. You can also adjust the confidence
+        interval.</p>
+      <ul class="flex space-x-4 ml-4">
+        <li>Expected y: <b id="middle">0</b></li>
+        <li>Lower bound: <b id="lower">0</b></li>
+        <li>Upper bound: <b id="upper">0</b></li>
+        <li>Confidence level: <b id="ci-output">0.95</b></li>
+      </ul>
+      <h4 class="font-semibold mt-3">Algebraic notation</h4>
+      <pre id="algebraic">(0, 1)</pre>
+    </div>
 
     <h3 class="text-lg font-bold mt-4">Download files for Homework 7 (MTH 246)</h3>
     <div class="grid justify-items-center mt-2">
       <div id="download-files-container"
         class="grid justify-items-center bg-white border-2 border-violet-400 rounded-lg overflow-hidden w-full md:w-2/3">
-        <button class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-full" id="download-csv">Step
+        <button class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-full" id="step1">Step
           1: Copy Equation</button>
-        <button class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-full" id="download-csv">Step
+        <button class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-full" id="step2">Step
           2: Summary Table</button>
-        <button class="bg-violet-500 hover:bg-violet-700 text-white font-bold py-2 px-4 rounded-full"
-          id="download-csv">Step 3A: Download Residual Plot</button>
-        <button class="bg-violet-500 hover:bg-violet-700 text-white font-bold py-2 px-4 rounded-full"
-          id="download-csv">Step 3B: Download QQ Plot</button>
-        <button class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-full" id="download-csv">Step
+        <button class="bg-violet-500 hover:bg-violet-700 text-white font-bold py-2 px-4 rounded-full" id="step3a">Step
+          3A: Download Residual Plot</button>
+        <button class="bg-violet-500 hover:bg-violet-700 text-white font-bold py-2 px-4 rounded-full" id="step3b">Step
+          3B: Download QQ Plot</button>
+        <button class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-full" id="step4">Step
           4: Copy k=n Confidence Interval</button>
       </div>
     </div>

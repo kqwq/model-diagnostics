@@ -1,8 +1,10 @@
 import regression from 'regression';
 import { probabilityToZscore, zScoreToProbability } from "zscore-probability";
+import { jStat } from 'jstat'
 
 
-function getModelData(data, modelType) {
+
+function getModelData(data, modelType, x0, ci) {
   let md = {
     name: modelType,
     regression: getRegression(data, modelType),
@@ -13,21 +15,25 @@ function getModelData(data, modelType) {
   md.qq4 = getQQ4(md.qq)
   md.n = data.length
   md.df = md.n - 2
-  
+  md.x0 = x0
+  if (x0 != null) {
+    md.y0 = md.regression.predict(x0)[1]
+    md.predictionInterval = getPredictionIntervals(data, md.regression.predict, x0, ci)
+  }
   return md
 }
 
-function getRegression(data, model) {
+function getRegression(d, model) {
   let result
-  if (model == "linear") {
-    result = regression.linear(data, {precision: 4})
-  } else if (model == "linear-ln") {
-    data = data.map(d => [d, Math.log(d[1])])
+  let data = [...d]
+  if (model.endsWith("ln")) {
+    data = data.map(d => [d[0], Math.log(d[1])])
+  } else if (model.endsWith("sqrt")) {
+    data = data.map(d => [d[0], Math.sqrt(d[1])])
+  }
+  if (model.startsWith("linear")) {
     result = regression.linear(data, {precision: 4})
   } else if (model == "quadratic") {
-    result = regression.polynomial(data, { order: 2, precision: 4 })
-  } else if (model == "quadratic-sqrt") {
-    data = data.map(d => [d, Math.sqrt(d[1])])
     result = regression.polynomial(data, { order: 2, precision: 4 })
   } else if (model == "cubic") {
     result = regression.polynomial(data, { order: 3, precision: 4 })
@@ -67,26 +73,32 @@ function getQQ4(residuals) {
   ]
 }
 
-function getANOVA(data, residuals) {
-  let n = data.length
-  let df = n - 2
-  let sst = residuals.reduce((a, b) => a + b[1] * b[1], 0)
-  let ssr = sst / df
-  let sse = sst / (n - 1)
-  let F = ssr / sse
-  //let p = 1 - F.cdf(df)
-  return {
-    sst: sst,
-    ssr: ssr,
-    sse: sse,
-    F: F,
-    //p: p,
-  }
+function tdist(df, conf_lvl) {
+  return jStat.studentt.inv((1 - (1 - conf_lvl) / 2), df)
 }
 
-function getCoefficients(data, model) {
-  let coefficients = model.predict(data[0][0])
-  return coefficients
+
+function getPredictionIntervals(data, predictor, x0, ci) {
+  let n = data.length
+  let df = n - 2
+  let xBar = data.reduce((a, b) => a + b[0], 0) / data.length
+  let yBar = data.reduce((a, b) => a + b[1], 0) / data.length
+  let y0 = predictor(x0)[1]
+  let xDiffSum = data.reduce((a, b) => a + b[0] - xBar, 0)
+  let yDiffSum = data.reduce((a, b) => a + b[1] - yBar, 0)
+  let xDiffSqSum = data.reduce((a, b) => a + Math.pow(b[0] - xBar, 2), 0)
+  let yDiffSqSum = data.reduce((a, b) => a + Math.pow(b[1] - yBar, 2), 0)
+  let xyDiffSum = data.reduce((a, b) => a + (b[0] - xBar) * (b[1] - yBar), 0)
+
+
+  let sRes = Math.sqrt( 1/df * (yDiffSqSum - Math.pow(xyDiffSum, 2) / xDiffSqSum))
+  let SSx = xDiffSqSum
+  let se = sRes * Math.sqrt(1/n + Math.pow(x0 - xBar, 2) / SSx)
+  let tCrit = tdist(df, ci)
+  let lower = y0 - se * tCrit
+  let upper = y0 + se * tCrit
+  return [lower, upper]
 }
+
 
 export { getModelData }

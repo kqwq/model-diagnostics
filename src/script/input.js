@@ -1,5 +1,5 @@
 
-import { clearChart, addDataset, updateChart } from "./plot.js"
+import { clearChart, addDataset, updateChart, addCurveOfBestFit } from "./plot.js"
 import { getModelData } from "./math.js"
 
 const $ = x => document.querySelector(x)
@@ -9,6 +9,14 @@ const axisElement = $("#axis")
 const modelElement = $("#model")
 const equationElement = $("#equation")
 const rOutputElement = $("#r-output")
+const xValueElement = $("#x-value")
+const ciElement = $("#confidence")
+const kElement = $("#k")
+const lowerElement = $("#lower")
+const middleElement = $("#middle")
+const upperElement = $("#upper")
+const ciOutputElement = $("#ci-output")
+const algebraicElement = $("#algebraic")
 
 let csvFileName = ""
 let csvData = []
@@ -16,6 +24,9 @@ let axisNames = []
 let yAxesNames = []
 let selectedYAxis = "y1"
 let selectedModel = "linear"
+let confidenceInterval = 0.95
+let xValue = 0
+let currentTab = "tab-scatterplot"
 let reducedData = [] // data reduced to [[x, y], [x, y], ...]
 let modelData = {
 /*
@@ -42,6 +53,10 @@ function drawScatterplot() {
     addDataset(yAxis, data);
   });
 
+  // add curve of best fit
+  console.log(modelData.regression)
+  addCurveOfBestFit(selectedModel + " least squares for " + selectedYAxis, modelData.regression.predict)
+
   // update chart
   updateChart(csvFileName)
 }
@@ -57,7 +72,7 @@ function drawResidualsPlot() {
     }
   })
 
-  addDataset("residuals", data);
+  addDataset(`${selectedYAxis} residuals`, data);
 
   // update chart
   updateChart(csvFileName)
@@ -73,7 +88,7 @@ function drawQQPlot() {
     }
   })
 
-  addDataset("Q–Q plot of residuals", data);
+  addDataset(`Q–Q plot of ${selectedYAxis} residuals`, data);
 
   // update chart
   updateChart(csvFileName)
@@ -127,19 +142,40 @@ R-squared: ${modelData.regression.r2} on ${modelData.df} degrees of freedom
   rOutputElement.innerText = rSquaredText
 }
 
+function updateCurrentPlot() {
+  if (currentTab === "tab-scatterplot") {
+    drawScatterplot()
+    
+  } else if (currentTab === "tab-residuals") {
+    drawResidualsPlot()
+  } else if (currentTab === "tab-qq") {
+    drawQQPlot()
+  }
+}
+
+function populateInterval() {
+  let interval = modelData.predictionInterval
+  let ci = confidenceInterval
+  if (!interval) return
+  let lower = interval[0]
+  let middle = modelData.y0
+  let upper = interval[1]
+  kElement.innerText = (modelData.x0).toPrecision(4)
+  lowerElement.innerText = lower.toPrecision(4)
+  middleElement.innerText = middle.toPrecision(4)
+  upperElement.innerText = upper.toPrecision(4)
+  algebraicElement.innerText = `(${lower.toPrecision(4)}, ${upper.toPrecision(4)})`
+  ciOutputElement.innerText = `${(ci) * 100}%`
+}
+
 presetElement.addEventListener("change", () => {
   csvFileName = presetElement.value
   if (!csvFileName) return
   csvData = require(`../asset/${csvFileName}.csv`)
 
-  // focus on scatterplot tab
-  showTab("#tab-scatterplot")
 
   // populate axis names
   populateAxisNames()
-
-  // clear data
-  drawScatterplot()
 
   // update everything else
   updateAll()
@@ -155,20 +191,34 @@ modelElement.addEventListener("change", () => {
   selectedModel = val
   updateAll()
 })
+xValueElement.addEventListener("change", () => {
+  let val = xValueElement.value
+  if (!val) return
+  xValue = parseFloat(val)
+  updateAll()
+})
+ciElement.addEventListener("change", () => {
+  let val = ciElement.value
+  if (!val) return
+  confidenceInterval = parseFloat(val)
+  updateAll()
+})
 
 function updateAll() {
 
-  // Update summary and plot sections
+  // Update summary 
   reducedData = csvData.map(p => [p['x'], p[selectedYAxis]])
-  modelData = getModelData(reducedData, selectedModel)
+  modelData = getModelData(reducedData, selectedModel, xValue, confidenceInterval)
   populateSummary()
+  
+  // Update plot
+  updateCurrentPlot()
 
   // Update X-value confidence interval
-  
+  populateInterval()
 }
 
 // Tabs
-let currentTab = "tab-scatterplot"
 let tabs = $$(".tab")
 function showTab(tabName) {
   currentTab = tabName
@@ -180,21 +230,15 @@ function showTab(tabName) {
 tabs.forEach(tab => tab.addEventListener("click", function(e) {
   showTab("#" + e.target.id)
   currentTab = e.target.id
-  if (currentTab == "tab-scatterplot") {
-    drawScatterplot()
-  } else if (currentTab == "tab-residuals") {
-    drawResidualsPlot()
-  } else if (currentTab == "tab-qq") {
-    drawQQPlot()
-  }
+  updateCurrentPlot()
 }))
 
 
 
-function optionalInit() {
-  csvFileName = "ex1"
-  csvData = require(`../asset/ex1.csv`)
-  populateAxisNames()
-  drawScatterplot()
-}
-optionalInit()
+// function optionalInit() {
+//   csvFileName = "ex1"
+//   csvData = require(`../asset/ex1.csv`)
+//   populateAxisNames()
+//   drawScatterplot()
+// }
+// optionalInit()

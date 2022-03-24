@@ -3,18 +3,19 @@ import { Chart, registerables  } from "chart.js";
 
 Chart.register(...registerables);
 
-let colors = [
-  'rgb(255,0,0)',
-  'rgb(0,70,239)',
-  'rgb(130,223,0)',
-  'rgb(205,0,179)',
-  'rgb(0,185,154)',
-  'rgb(243,132,0)',
-  'rgb(57,0,227)',
-  'rgb(9,209,0)',
-  'rgb(190,0,64)',
-  'rgb(0,155,247)'
-];
+let colors = {
+  y: 'rgb(255,0,0)',
+  y1: 'rgb(255,0,0)',
+  y2: 'rgb(0,70,239)',
+  y3: 'rgb(130,223,0)',
+  y4: 'rgb(205,0,179)',
+  y5: 'rgb(0,185,154)',
+  y5: 'rgb(243,132,0)',
+  y5: 'rgb(57,0,227)',
+  y5: 'rgb(9,209,0)',
+  y5: 'rgb(190,0,64)',
+  y5: 'rgb(0,155,247)'
+};
 let defaultColor = 'rgb(0,0,0)';
 
 const data = {
@@ -66,16 +67,41 @@ const config = {
   },
 };
 function clearChart() {
+  myChart.minX = Infinity
+  myChart.maxX = -Infinity
   myChart.data.datasets = [];
   myChart.update();
 }
 function addDataset(name, data) {
+  myChart.minX = Math.min(myChart.minX, ...data.map(d => d.x))
+  myChart.maxX = Math.max(myChart.maxX, ...data.map(d => d.x))
   myChart.data.datasets.push({
     label: name,
     data: data,
-    borderColor: colors[name.at(-1)-1] || defaultColor,
+    borderColor: colors[name] || defaultColor,
     //backgroundColor: Utils.transparentize(Utils.CHART_COLORS.red, 0.5),
     yAxisID: "y",
+  });
+}
+function addCurveOfBestFit(name, predictor) {
+  // lerp between min and max for 100 points
+  let lineData = [];
+  for (let i = 0; i < 100; i++) {
+    let x = myChart.minX + (myChart.maxX - myChart.minX) * i / 100
+    let y = predictor(x)[1]
+    lineData.push({
+      x: x,
+      y: y,
+    })
+  }
+  myChart.data.datasets.push({
+    label: name,
+    data: lineData,
+    borderColor: defaultColor,
+    yAxisID: "y",
+    type: 'line',
+    pointRadius: 0,
+    borderWidth: 1.5
   });
 }
 function updateChart(fileName) {
@@ -89,6 +115,6 @@ const myChart = new Chart(
   config
 )
 canvas.style.backgroundColor = 'white'
+clearChart()
 
-
-export { clearChart, addDataset, updateChart };
+export { clearChart, addDataset, updateChart, addCurveOfBestFit };
