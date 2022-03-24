@@ -14,7 +14,7 @@ let csvFileName = ""
 let csvData = []
 let axisNames = []
 let yAxesNames = []
-let selectedYAxis = ""
+let selectedYAxis = "y1"
 let selectedModel = "linear"
 let reducedData = [] // data reduced to [[x, y], [x, y], ...]
 let modelData = {
@@ -97,8 +97,18 @@ function populateSummary() {
 
   // Update R-squared
   let residualHeaders = ["Min", "1Q", "Median", "3Q", "Max"]
+  let degreeNames = ["Intercept", "x", "x^2", "x^3", "x^4", "x^5", "x^6", "x^7", "x^8", "x^9", "x^10"]
   let coefficientHeaders = ["", "Estimate", "Std. Error", "t value", "Pr(>|t|)"]
-  let intercept, intercept_se, intercept_t, intercept_p, coef_str, r2, n
+  let coefs = modelData.regression.equation.map((val, degree) => {
+    return [
+      degreeNames[degree],
+      val.toPrecision(4),
+      "se",
+      "t",
+      "0.x"
+    ]
+  })
+  let coefsTable = coefs.map(row => row.map(cell => cell.toString().padStart(10)).join(" ")).join("\n")
   let rSquaredText = 
 `Residuals:
 ${residualHeaders.map(h => h.padStart(10)).join(" ")}
@@ -106,12 +116,11 @@ ${modelData.qq4.map(q => q.toPrecision(4).padStart(10)).join(" ")}
 
 Coefficients:
 ${coefficientHeaders.map(h => h.padStart(10)).join(" ")}
-Intercept \t ${intercept} \t ${intercept_se} \t ${intercept_t} \t ${intercept_p}
-${coef_str}
+${coefsTable}
 ---
 Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
 
-R-squared: ${r2} on ${modelData.df} degrees of freedom
+R-squared: ${modelData.regression.r2} on ${modelData.df} degrees of freedom
 `
 
 
@@ -123,39 +132,53 @@ presetElement.addEventListener("change", () => {
   if (!csvFileName) return
   csvData = require(`../asset/${csvFileName}.csv`)
 
+  // focus on scatterplot tab
+  showTab("#tab-scatterplot")
+
   // populate axis names
   populateAxisNames()
 
   // clear data
   drawScatterplot()
+
+  // update everything else
+  updateAll()
 })
 
 axisElement.addEventListener("change", () => {
   selectedYAxis = axisElement.value
+  updateAll()
 })
 modelElement.addEventListener("change", () => {
   let val = modelElement.value
   if (!val) return
   selectedModel = val
+  updateAll()
+})
 
+function updateAll() {
+
+  // Update summary and plot sections
   reducedData = csvData.map(p => [p['x'], p[selectedYAxis]])
-
-  console.log(reducedData)
-
   modelData = getModelData(reducedData, selectedModel)
   populateSummary()
-  console.log(modelData)
 
-  // draw residuals plot
-  //drawResidualsPlot()
-})
+  // Update X-value confidence interval
+  
+}
 
 // Tabs
 let currentTab = "tab-scatterplot"
 let tabs = $$(".tab")
+function showTab(tabName) {
+  currentTab = tabName
+  tabs.forEach(tab => {
+    tab.classList.remove("active")
+  })
+  $(tabName).classList.add("active")
+}
 tabs.forEach(tab => tab.addEventListener("click", function(e) {
-  $$(".tab").forEach(tab => tab.classList.remove("active"))
-  e.target.classList.add("active")
+  showTab("#" + e.target.id)
   currentTab = e.target.id
   if (currentTab == "tab-scatterplot") {
     drawScatterplot()
