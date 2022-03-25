@@ -27,14 +27,13 @@ function getModelData(data, modelType, x0, ci) {
   return md
 }
 
-function getRegression(d, model) {
+function getRegression(data, model) {
   let result
-  let data = [...d]
-  if (model.endsWith("ln")) {
-    data = data.map(d => [d[0], Math.log(d[1])])
-  } else if (model.endsWith("sqrt")) {
-    data = data.map(d => [d[0], Math.sqrt(d[1])])
-  }
+  // if (model.endsWith("ln")) {
+  //   data = data.map(d => [d[0], Math.log(d[1])])
+  // } else if (model.endsWith("sqrt")) {
+  //   data = data.map(d => [d[0], Math.sqrt(d[1])])
+  // }
   if (model.startsWith("linear")) {
     result = regression.linear(data, {precision: 3})
   } else if (model.startsWith("quadratic")) {

@@ -21,6 +21,7 @@ const algebraicElement = $("#algebraic")
 
 let csvFileName = ""
 let csvData = []
+let globalYModifier = x => x;
 let axisNames = []
 let yAxesNames = []
 let selectedYAxis = "y1"
@@ -48,7 +49,7 @@ function drawScatterplot() {
     let data = csvData.map(p => {
       return {
         x: p['x'],
-        y: p[yAxis],
+        y: globalYModifier(p[yAxis]),
       }
     })
     addDataset(yAxis, data);
@@ -126,9 +127,9 @@ function populateSummary() {
     return [
       degreeNames[degree],
       val.toPrecision(4),
-      "se",
-      "t",
-      "0.x"
+      "?",
+      "?",
+      "?"
     ]
   })
   let coefsTable = coefs.map(row => row.map(cell => cell.toString().padStart(10)).join(" ")).join("\n")
@@ -244,8 +245,20 @@ ciElement.addEventListener("change", () => {
 
 function updateAll() {
 
+  // Update global y modifier
+  if (selectedModel.endsWith("ln")) {
+    globalYModifier = y => Math.log(y)
+  } else if (selectedModel.endsWith("sqrt")) {
+    globalYModifier = y => Math.sqrt(y)
+  } else {
+    globalYModifier = y => y
+  }
+
   // Update summary 
-  reducedData = csvData.map(p => [p['x'], p[selectedYAxis]])
+  reducedData = csvData.map(p => [p['x'], globalYModifier(p[selectedYAxis])])
+
+
+
   modelData = getModelData(reducedData, selectedModel, xValue, confidenceInterval)
   populateSummary()
   

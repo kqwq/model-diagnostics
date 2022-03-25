@@ -83,7 +83,7 @@ function addDataset(name, data, bandType, selectedYAxis) {
   }
   if (bandType) {
     chartData.borderColor = "transparent"
-    chartData.backgroundColor = colors[selectedYAxis].slice(0, -1) + ",0.5)"
+    chartData.backgroundColor = colors[selectedYAxis].slice(0, -1) + ",0.3)"
     chartData.fill = myChart.data.datasets.length - (bandType === "lower" ? 1 : 2)
     chartData.pointRadius = 0
 
@@ -112,7 +112,8 @@ function addCurveOfBestFit(name, predictor) {
   });
 }
 function updateChart(fileName) {
-  myChart.options.plugins.title.text = `Scatterplot for ${fileName}`;
+  //myChart.options.plugins.title.text = `Scatterplot for ${fileName}`;
+  myChart.options.plugins.title.display = false;
   myChart.update();
 }
 
