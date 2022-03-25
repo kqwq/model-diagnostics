@@ -8,6 +8,7 @@ const chooseFileElement = $("#choose-file")
 const presetElement = $("#preset")
 const axisElement = $("#axis")
 const modelElement = $("#model")
+const ignoreElement = $("#ignore")
 const equationElement = $("#equation")
 const rOutputElement = $("#r-output")
 const xValueElement = $("#x-value")
@@ -18,6 +19,8 @@ const middleElement = $("#middle")
 const upperElement = $("#upper")
 const ciOutputElement = $("#ci-output")
 const algebraicElement = $("#algebraic")
+
+let ignoreAllOtherYAxes = false
 
 let csvFileName = ""
 let csvData = []
@@ -52,7 +55,9 @@ function drawScatterplot() {
         y: globalYModifier(p[yAxis]),
       }
     })
-    addDataset(yAxis, data);
+    if (!ignoreAllOtherYAxes || yAxis === selectedYAxis) {
+      addDataset(yAxis, data);
+    }
   });
 
   // add curve of best fit
@@ -228,6 +233,10 @@ modelElement.addEventListener("change", () => {
   let val = modelElement.value
   if (!val) return
   selectedModel = val
+  updateAll()
+})
+ignoreElement.addEventListener("change", () => {
+  ignoreAllOtherYAxes = ignoreElement.checked
   updateAll()
 })
 xValueElement.addEventListener("change", () => {
