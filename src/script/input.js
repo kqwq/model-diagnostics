@@ -25,6 +25,7 @@ let ignoreAllOtherYAxes = false
 let csvFileName = ""
 let csvData = []
 let globalYModifier = x => x;
+let globalYUnmodifier = x => x;
 let axisNames = []
 let yAxesNames = []
 let selectedYAxis = "y1"
@@ -128,7 +129,7 @@ function populateSummary() {
   let residualHeaders = ["Min", "1Q", "Median", "3Q", "Max"]
   let degreeNames = ["Intercept", "x", "x^2", "x^3", "x^4", "x^5", "x^6", "x^7", "x^8", "x^9", "x^10"]
   let coefficientHeaders = ["", "Estimate", "Std. Error", "t value", "Pr(>|t|)"]
-  let coefs = modelData.regression.equation.map((val, degree) => {
+  let coefs = modelData.regression.equation.reverse().map((val, degree) => {
     return [
       degreeNames[degree],
       val.toPrecision(4),
@@ -174,9 +175,10 @@ function populateInterval() {
   let interval = modelData.predictionInterval
   let ci = confidenceInterval
   if (!interval) return
-  let lower = interval[0]
-  let middle = modelData.y0
-  let upper = interval[1]
+  
+  let lower = globalYUnmodifier(interval[0])
+  let middle = globalYUnmodifier(modelData.y0)
+  let upper = globalYUnmodifier(interval[1])
   kElement.innerText = (modelData.x0).toPrecision(4)
   lowerElement.innerText = lower.toPrecision(4)
   middleElement.innerText = middle.toPrecision(4)
@@ -257,10 +259,13 @@ function updateAll() {
   // Update global y modifier
   if (selectedModel.endsWith("ln")) {
     globalYModifier = y => Math.log(y)
+    globalYUnmodifier = y => Math.exp(y)
   } else if (selectedModel.endsWith("sqrt")) {
     globalYModifier = y => Math.sqrt(y)
+    globalYUnmodifier = y => Math.pow(y, 2)
   } else {
     globalYModifier = y => y
+    globalYUnmodifier = y => y
   }
 
   // Update summary 
