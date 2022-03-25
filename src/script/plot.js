@@ -72,16 +72,23 @@ function clearChart() {
   myChart.data.datasets = [];
   myChart.update();
 }
-function addDataset(name, data) {
+function addDataset(name, data, bandType, selectedYAxis) {
   myChart.minX = Math.min(myChart.minX, ...data.map(d => d.x))
   myChart.maxX = Math.max(myChart.maxX, ...data.map(d => d.x))
-  myChart.data.datasets.push({
+  let chartData = {
     label: name,
     data: data,
     borderColor: colors[name] || defaultColor,
-    //backgroundColor: Utils.transparentize(Utils.CHART_COLORS.red, 0.5),
     yAxisID: "y",
-  });
+  }
+  if (bandType) {
+    chartData.borderColor = "transparent"
+    chartData.backgroundColor = colors[selectedYAxis].slice(0, -1) + ",0.5)"
+    chartData.fill = myChart.data.datasets.length - (bandType === "lower" ? 1 : 2)
+    chartData.pointRadius = 0
+
+  }
+  myChart.data.datasets.push(chartData);
 }
 function addCurveOfBestFit(name, predictor) {
   // lerp between min and max for 100 points

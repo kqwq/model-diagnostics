@@ -4,6 +4,7 @@ import { getModelData } from "./math.js"
 
 const $ = x => document.querySelector(x)
 const $$ = x => document.querySelectorAll(x)
+const chooseFileElement = $("#choose-file")
 const presetElement = $("#preset")
 const axisElement = $("#axis")
 const modelElement = $("#model")
@@ -57,6 +58,12 @@ function drawScatterplot() {
   console.log(modelData.regression)
   addCurveOfBestFit(selectedModel + " least squares for " + selectedYAxis, modelData.regression.predict)
 
+  // add bands
+  if (modelData.lowerBand) {
+    addDataset("Lower bound", modelData.lowerBand, "lower", selectedYAxis)
+    addDataset("Upper bound", modelData.upperBand, "upper", selectedYAxis)
+  }
+
   // update chart
   updateChart(csvFileName)
 }
@@ -107,8 +114,9 @@ function populateAxisNames() {
 }
 
 function populateSummary() {
+  console.log(modelData)
   // Update equation
-  equationElement.innerHTML = modelData.regression.string
+  equationElement.innerHTML = modelData.regression.string.replace(/\+ \-/g, "-")
 
   // Update R-squared
   let residualHeaders = ["Min", "1Q", "Median", "3Q", "Max"]
@@ -142,15 +150,18 @@ R-squared: ${modelData.regression.r2} on ${modelData.df} degrees of freedom
   rOutputElement.innerText = rSquaredText
 }
 
-function updateCurrentPlot() {
-  if (currentTab === "tab-scatterplot") {
+function updateCurrentPlot(override=null) {
+  let tab = override || currentTab
+  if (tab === "tab-scatterplot") {
     drawScatterplot()
-    
-  } else if (currentTab === "tab-residuals") {
+  } else if (tab === "tab-residuals") {
     drawResidualsPlot()
-  } else if (currentTab === "tab-qq") {
+  } else if (tab === "tab-qq") {
     drawQQPlot()
   }
+}
+function getCanvasDownloadFileName(plotType) {
+  return `${csvFileName}-${selectedModel}-${selectedYAxis}-${plotType}.png`
 }
 
 function populateInterval() {
@@ -168,11 +179,38 @@ function populateInterval() {
   ciOutputElement.innerText = `${(ci) * 100}%`
 }
 
+chooseFileElement.addEventListener("change", function(event) {
+  let file = event.target.files[0]
+  if (!file) return
+  let reader = new FileReader()
+  reader.onload = (event) => {
+    console.log(event.target.result)
+    let allRows = event.target.result.split("\n")
+    let headers = allRows[0].split(",").map(s => s.trim())
+    csvData = allRows.slice(1).map(row => {
+      let cells = row.split(",").map(s => s.trim())
+      let obj = {}
+      for (let i = 0; i < headers.length; i++) {
+        let num = parseFloat(cells[i])
+        if (isNaN(num)) return null
+        obj[headers[i]] = num
+      }
+      return obj
+    }).filter(d => d !== null)
+    console.log(csvData)
+    csvFileName = file.name
+    populateAxisNames()
+    updateAll()
+  }
+  reader.readAsText(file)
+})
+
 presetElement.addEventListener("change", () => {
   csvFileName = presetElement.value
   if (!csvFileName) return
   csvData = require(`../asset/${csvFileName}.csv`)
 
+  console.log(csvData)
 
   // populate axis names
   populateAxisNames()
@@ -242,3 +280,5 @@ tabs.forEach(tab => tab.addEventListener("click", function(e) {
 //   drawScatterplot()
 // }
 // optionalInit()
+
+export { updateCurrentPlot, getCanvasDownloadFileName }

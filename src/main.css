@@ -12,8 +12,8 @@
 #outro a:hover {
   text-decoration: underline;
 }
-.chunk {
-  border: dotted 1px green;
+h2 {
+  display: none
 }
 
 @layer components {
@@ -31,6 +31,6 @@
   }
   .chunk {
     @apply p-4 md:p-6 
-    
   }
+
 }

@@ -22,14 +22,14 @@
     <div class="chunk">
 
       <!-- Input -->
-      <h2 class="text-2xl font-light mt-8">Input</h2>
+      <h3 class="text-3xl font-light">Input</h3>
       <h3 class="text-lg font-bold mt-4">Step 1: Upload a list of X,Y pairs (.csv)</h3>
 
       <form class="flex items-center space-x-6 mt-2">
 
         <label class="block">
-          <span class="sr-only">Choose profile photo</span>
-          <input type="file" class="block w-full text-sm text-slate-500
+          <span class="sr-only">Choose File</span>
+          <input id="choose-file" type="file" class="block w-full text-sm text-slate-500
         file:mr-4 file:py-2 file:px-4
         file:rounded-full file:border-0
         file:text-sm file:font-semibold
@@ -84,12 +84,12 @@
       </form>
     </div>
 
-  
+
 
     <div class="chunk">
 
       <h3 class="text-lg font-bold mt-4">Plot</h3>
-      <div class="grid justify-items-center">
+      <div class="grid justify-items-center mt-2">
         <div class="border-2 border-violet-400 rounded-lg overflow-hidden w-full">
           <ul class="flex border-b">
             <li class="-mb-px mr-1">
@@ -132,10 +132,11 @@ Please select a regression model and y-axis. </pre>
     <div class="chunk">
 
       <h3 class="text-lg font-bold mt-4">X-value Confidence Interval</h3>
-      <p>This section is based on the (k=<span id="k"></span>) value specified above. You can also adjust the confidence
+      <p class="mt-2">This section is based on the (k=<span id="k"></span>) value specified above. You can also adjust
+        the confidence
         interval.</p>
       <ul class="flex space-x-4 ml-4">
-        <li>Expected y: <b id="middle">0</b></li>
+        <li>Fit: <b id="middle">0</b></li>
         <li>Lower bound: <b id="lower">0</b></li>
         <li>Upper bound: <b id="upper">0</b></li>
         <li>Confidence level: <b id="ci-output">0.95</b></li>
@@ -143,22 +144,22 @@ Please select a regression model and y-axis. </pre>
       <h4 class="font-semibold mt-3">Algebraic notation</h4>
       <pre id="algebraic">(0, 1)</pre>
     </div>
+  </div>
 
-    <h3 class="text-lg font-bold mt-4">Download files for Homework 7 (MTH 246)</h3>
-    <div class="grid justify-items-center mt-2">
-      <div id="download-files-container"
-        class="grid justify-items-center bg-white border-2 border-violet-400 rounded-lg overflow-hidden w-full md:w-2/3">
-        <button class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-full" id="step1">Step
-          1: Copy Equation</button>
-        <button class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-full" id="step2">Step
-          2: Summary Table</button>
-        <button class="bg-violet-500 hover:bg-violet-700 text-white font-bold py-2 px-4 rounded-full" id="step3a">Step
-          3A: Download Residual Plot</button>
-        <button class="bg-violet-500 hover:bg-violet-700 text-white font-bold py-2 px-4 rounded-full" id="step3b">Step
-          3B: Download QQ Plot</button>
-        <button class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-full" id="step4">Step
-          4: Copy k=n Confidence Interval</button>
-      </div>
+  <h3 class="text-lg font-bold mt-6 text-center">Download files for Homework 7 (MTH 246)</h3>
+  <div class="grid justify-items-center mt-2">
+    <div id="download-files-container"
+      class="grid justify-items-center bg-white border-2 border-violet-400 rounded-lg overflow-hidden w-full md:w-2/3">
+      <button class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-full" id="step1">Step
+        1: Copy Equation</button>
+      <button class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-full" id="step2">Step
+        2: Summary Table</button>
+      <button class="bg-violet-500 hover:bg-violet-700 text-white font-bold py-2 px-4 rounded-full" id="step3a">Step
+        3A: Download Residual Plot</button>
+      <button class="bg-violet-500 hover:bg-violet-700 text-white font-bold py-2 px-4 rounded-full" id="step3b">Step
+        3B: Download QQ Plot</button>
+      <button class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-full" id="step4">Step
+        4: Copy k=n Confidence Interval</button>
     </div>
     <div id="outro" class=" mt-4">
       <p>All code, including math calculations, regression models, model prediction and confidence intervals are

@@ -20,6 +20,10 @@ function getModelData(data, modelType, x0, ci) {
     md.y0 = md.regression.predict(x0)[1]
     md.predictionInterval = getPredictionIntervals(data, md.regression.predict, x0, ci)
   }
+  // prediction interval for all x values
+  let intervals = data.map(d => getPredictionIntervals(data, md.regression.predict, d[0], ci))
+  md.lowerBand = data.map((d, ind) => { return {x: d[0], y:intervals[ind][0]} })
+  md.upperBand = data.map((d, ind) => { return {x: d[0], y:intervals[ind][1]} })
   return md
 }
 
@@ -32,11 +36,11 @@ function getRegression(d, model) {
     data = data.map(d => [d[0], Math.sqrt(d[1])])
   }
   if (model.startsWith("linear")) {
-    result = regression.linear(data, {precision: 4})
-  } else if (model == "quadratic") {
-    result = regression.polynomial(data, { order: 2, precision: 4 })
-  } else if (model == "cubic") {
-    result = regression.polynomial(data, { order: 3, precision: 4 })
+    result = regression.linear(data, {precision: 3})
+  } else if (model.startsWith("quadratic")) {
+    result = regression.polynomial(data, { order: 2, precision: 3 })
+  } else if (model.startsWith("cubic")) {
+    result = regression.polynomial(data, { order: 3, precision: 3 })
   } 
   return result
 }
@@ -84,19 +88,30 @@ function getPredictionIntervals(data, predictor, x0, ci) {
   let xBar = data.reduce((a, b) => a + b[0], 0) / data.length
   let yBar = data.reduce((a, b) => a + b[1], 0) / data.length
   let y0 = predictor(x0)[1]
-  let xDiffSum = data.reduce((a, b) => a + b[0] - xBar, 0)
-  let yDiffSum = data.reduce((a, b) => a + b[1] - yBar, 0)
-  let xDiffSqSum = data.reduce((a, b) => a + Math.pow(b[0] - xBar, 2), 0)
-  let yDiffSqSum = data.reduce((a, b) => a + Math.pow(b[1] - yBar, 2), 0)
-  let xyDiffSum = data.reduce((a, b) => a + (b[0] - xBar) * (b[1] - yBar), 0)
+  let sumEi = data.map((d, ind) => {
+    let trueY = d[1]
+    let predictedY = predictor(d[0])[1]
+    let ei = Math.pow(trueY - predictedY, 2)
+    return ei
+  }).reduce((a, b) => a + b, 0)
+  let sumXi2 = data.map(d => {
+    let xi = Math.pow(d[0] - xBar, 2)
+    return xi
+  }).reduce((a, b) => a + b, 0)
 
 
-  let sRes = Math.sqrt( 1/df * (yDiffSqSum - Math.pow(xyDiffSum, 2) / xDiffSqSum))
-  let SSx = xDiffSqSum
-  let se = sRes * Math.sqrt(1/n + Math.pow(x0 - xBar, 2) / SSx)
+  // let xDiffSum = data.reduce((a, b) => a + b[0] - xBar, 0)
+  // let yDiffSum = data.reduce((a, b) => a + b[1] - yBar, 0)
+  // let xDiffSqSum = data.reduce((a, b) => a + Math.pow(b[0] - xBar, 2), 0)
+  // let yDiffSqSum = data.reduce((a, b) => a + Math.pow(b[1] - yBar, 2), 0)
+  // let xyDiffSum = data.reduce((a, b) => a + (b[0] - xBar) * (b[1] - yBar), 0)
+
+
+  let se = Math.sqrt(sumEi / (n - 2)) * Math.sqrt(1 + 1 / n + Math.pow(x0 - xBar, 2) / (sumXi2 - n * Math.pow(xBar, 2)))
   let tCrit = tdist(df, ci)
   let lower = y0 - se * tCrit
   let upper = y0 + se * tCrit
+  console.log('t score', tCrit)
   return [lower, upper]
 }
 
